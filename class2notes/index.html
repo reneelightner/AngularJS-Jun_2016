@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js'></script>
+		<script src='index.js'></script>
+		<style>
+			.redClass{
+				color: red;
+			}
+		</style>
+	</head>
+	<body ng-app="MyApp">
+		<div ng-controller="MyController as myCtrl">
+			<p>Two way binding bc we're using ng-model</p> <!-- two way binding is only w.ng-model -->
+			<input type="type" ng-model="myCtrl.studentName"> <!-- save whatever the user types into a property called studentName -->
+			<span>{{myCtrl.studentName}}</span>
+			<!-- can update a var thats in the controller already -->
+			<input type="type" ng-model="myCtrl.student.name.fname">
+			<span>{{myCtrl.student.name.fname}}</span>
+			<hr>
+			<!-- .isChecked is either true or false -->
+			<input type="checkbox" ng-model="myCtrl.isChecked" >
+			<span>Checkbox is:{{myCtrl.isChecked}}</span>
+			<hr>
+			<!-- ng-model with a radio button -->
+			<!-- use ng-model also tell the value for when that radio is selected -->
+			<!-- if click first for ex: seasonSelected will be the property fall will be the value -->
+			<!-- <input type="radio" name="season" value="fall" ng-model="myCtrl.seasonSelected"> Fall -->
+			<!-- but sometimes you want to take a value in your controller so self.fall in controller and ng-value -->
+			<input type="radio" name="season" ng-value="myCtrl.fallSeason" ng-model="myCtrl.seasonSelected"> Fall
+			<input type="radio" name="season" ng-value="myCtrl.winterSeason" ng-model="myCtrl.seasonSelected"> Winter
+			<input type="radio" name="season" ng-value="myCtrl.springSeason" ng-model="myCtrl.seasonSelected"> Spring
+			<input type="radio" name="season" ng-value="myCtrl.summerSeason" ng-model="myCtrl.seasonSelected"> Summer
+			<span>The selected season is: {{myCtrl.seasonSelected.description}}</span>
+			<hr>
+			<!-- myCtrl is an aka -->
+			<h1 ng-bind="myCtrl.myName"></h1> <!-- ng-bind displays value of property (myName is a property for ex) -->
+			<h3 ng-bind="myCtrl.age">this will be overwritten</h3>
+
+			<p>I've been a {{myCtrl.job}} for {{2 + 10}} years</p>
+
+			<div ng-repeat="name in myCtrl.simpleNameArray">
+				{{name}} <!-- this name variable must be inside ng-repeat -->
+			</div>
+			<div ng-repeat="object in myCtrl.objectsArray">
+				<!-- comes w.ng-repeat: $index other boolean come w.ng-repeat -->
+				<label>{{$index+1}}. First Name: </label><span ng-bind='object.fName'></span><br>
+				<label>{{$index+1}}. Last Name: </label><span ng-bind='object.lName'></span><br>
+			</div>
+			<div ng-repeat="(key, val) in myCtrl.dog"> <!-- two placeholder vars one for key one for value -->
+				<label>{{key}}: </label><span>{{val}}</span>
+			</div>
+			<!-- ng-class directive, whatever string is in the controller, that gets added to the class-->
+			<input type="text" ng-model="myCtrl.userString">
+			<div ng-class='myCtrl.userString'>
+				lorem ipsum dolor sit amet
+			</div>
+			<!-- ng-class with object stedda string -->
+			<!-- feeding in an obj looks for key and true -->
+			<input type="checkbox" ng-model="myCtrl.cssObject.redClass">
+			<div ng-class="myCtrl.cssObject">
+				second lorem ipsum dolor sit amet
+			</div>
+		</div>
+	</body><!-- end of MyApp, angular ends here -->
+</html>

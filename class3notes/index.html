@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js'></script>
+		<script src='index.js'></script>
+		<style>
+			.redClass{
+				color: red;
+			}
+		</style>
+	</head>
+	<body ng-app="MyApp">
+		<div ng-controller="MyController as myCtrl">
+			<p>First: <span>{{myCtrl.firstName}}</span></p> 
+			<p>Last: <span>{{myCtrl.lastName}}</span></p> 
+			<button ng-click="myCtrl.edit()">Edit</button>
+			<input type="type" ng-model="myCtrl.firstName">
+			<input type="type" ng-model="myCtrl.lastName">
+			<button ng-click="myCtrl.cancel()">Cancel</button>
+			<button ng-click="myCtrl.done()">Done</button>
+		</div>
+	</body><!-- end of MyApp, angular ends here -->
+</html>
