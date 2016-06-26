@@ -1,0 +1,13 @@
+Great Job Renee, The main purpose of this assignment is to utilize radio buttons and ng-class and from what I see you are getting it perfectly.
+
+Everything is working great, but here are some optimazations you could make:
+
+
+1)  I saw you tried putting the themes into an array and using ng-repeat to display the radio buttons.  Check out the solutions on how to do this.
+
+2)  Utilize child css selectors.  Here you are using a model object "themeSelected" to set different styles on all the elements you want updated.  An alternative approach is to use only one ng-class on the parent element and use css child selectors to style everything else.
+
+
+Take a look at the solutions I put in your repository to see this in action.
+
+Let me know if you have any questions.  Great Job!
