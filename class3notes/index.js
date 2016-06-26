@@ -7,6 +7,11 @@ myModule.controller('MyController', function(){
 	self.firstName = 'George';
 	self.lastName = 'Daghr';
 
+	self.inputfirstName = 'George';
+	self.inputlastName = 'Daghr';
+
+	self.showName = true;
+
 	self.cancel = function() {
 		console.log("cancel");
     };
@@ -16,7 +21,9 @@ myModule.controller('MyController', function(){
     };
 
     self.edit = function() {
-
+    	var trueOrFalse;
+    	self.showName == true ? trueOrFalse = false : trueOrFalse = true;
+    	self.showName = trueOrFalse;
     };
 
 });
