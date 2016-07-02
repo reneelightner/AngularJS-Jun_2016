@@ -1,0 +1,9 @@
+Great Job Renee, here are some notes below:
+
+-  Question to think about, what if we had 100 folders instead of 3? What would you do differently?
+
+-  Great job using ng-value for the folder radio buttons.
+
+-  I did the todo's a little differently, but I see where you're going with it.  I never thought about it like that :).  Good job.
+
+Overall, great job!
