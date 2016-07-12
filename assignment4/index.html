@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js'></script>
+		<script src='index.js'></script>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<style>
+		</style>
+	</head>
+	<body ng-app="MyApp">
+		<div class="container" ng-controller="MyController as myCtrl">
+			<div class="row">
+				<div class="col-md-8">
+					<h4>User Information:</h4>
+					<span>User Name:</span>
+					<input class="form-control" type="text" ng-model="myCtrl.playlist.userName">
+					<span>Age:</span>
+					<input class="form-control" type="text" ng-model="myCtrl.playlist.userAge" ng-change="myCtrl.checkAge()">
+				</div>
+				<!-- use for checking -->
+				<!-- {{myCtrl.playlist.explicitDisabled}} -->
+				<div class="col-md-4">
+					<h4>Clean or Explicit playlist?</h4>
+					<input type="radio" name="playlist" value="clean" ng-model="myCtrl.playlist.playlistSelected" > Clean
+					<input type="radio" name="playlist" value="explicit" ng-model="myCtrl.playlist.playlistSelected" ng-disabled="myCtrl.playlist.explicitDisabled"> Explicit
+				</div>
+				<div class="col-md-8">
+					<h4>Genre:</h4>
+					<input type="radio" name="genre" ng-value="myCtrl.rockSongs" ng-model="myCtrl.genreSelected"> Rock
+					<input type="radio" name="genre" ng-value="myCtrl.popSongs" ng-model="myCtrl.genreSelected"> Pop
+					<input type="radio" name="genre" ng-value="myCtrl.rapSongs" ng-model="myCtrl.genreSelected"> Rap
+				</div>
+				<div class="col-md-4">
+					<h4>Song Selected:</h4>
+					<!-- have to wrap the input and its binding in another element and repeat that  -->
+					<!-- with two-way binding use ng-model stedda ng-click -->
+					<div ng-repeat="song in myCtrl.genreSelected">
+						<input type="checkbox" name="song" ng-model="song.checked">{{song.song}}
+					</div>
+				</div>
+				<div class="col-md-12">
+					<button class='btn' ng-click="myCtrl.outputPlaylist()">Submit</button>
+				</div>
+			</div>
+		</div>
+	</body><!-- end of MyApp, angular ends here -->
+</html>
