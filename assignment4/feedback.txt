@@ -1,0 +1,6 @@
+Looks good Renee,
+
+- I'd move the genres/songs out of the controller and into some kind of value.
+- Also, the checkage functionality, I'd move into the PlayList.  These two things strike me as related so it would make sense to put them together under one roof.
+
+- Besides that I'd say it looks great.

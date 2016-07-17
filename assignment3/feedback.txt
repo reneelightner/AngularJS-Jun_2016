@@ -1,0 +1,52 @@
+Great job Renee.  These are all really minor notes but they're mostly around simplification.  Here they are:
+
+- this is small, but to save a step when creating a new assignment instead of 
+
+	var objAssignment = {};
+	objAssignment.assignment = name;
+	objAssignment.score = score;
+
+	you can just do...
+
+	var objAssignment = {
+		assignment: name,
+		score: score
+	};
+
+- instead of keeping a variable for the number of assignments you can just use the length of the array.  So...
+
+	return allScores/arrOfAssignments.length;
+
+
+
+- for the calcGrade function you don't need to check if it's less then the previous thing...
+
+	eg:
+
+		if(average <= 100 && average>=90){
+			return "A";
+		}else if(average < 90 && average>=80){
+			return "B";
+		}else if(average < 80 && average>=70){
+			return "C";
+		}else if(average < 70 && average>=60){
+			return "D";
+		}else{
+			return "F";
+		}
+
+	the else part takes care of that.  Eg if it's less than 90 it will go to the second block, so you can just say
+
+		if(average>=90){
+			return "A";
+		}else if(average>=80){
+			return "B";
+		}else if(average>=70){
+			return "C";
+		}else if(average>=60){
+			return "D";
+		}else{
+			return "F";
+		}
+
+- that's all I have really it looks great.  :)
