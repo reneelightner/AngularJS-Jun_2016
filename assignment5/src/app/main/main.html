@@ -1,0 +1,10 @@
+<div class="container">
+  <h5>Search for an address:</h5>
+  <div>
+  	<input class="form-control" type="text" ng-model="ctrl.searchedAddress" ng-change="ctrl.getAddressFromInput()">
+  	<p>Results:</p>
+  	<div ng-repeat="address in ctrl.addressResults">
+  		<span ng-bind="address.formatted_address"></span>
+  	</div>
+  </div>
+</div>
