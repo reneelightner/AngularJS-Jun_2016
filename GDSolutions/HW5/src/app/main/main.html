@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="row">
+    <input type="text" name="addressInput" class="form-control" ng-model="ctrl.userAddress" ng-change="ctrl.onAddressChange(ctrl.userAddress)">
+  </div>
+  <div class="row">
+    <h3>Results</h3>
+    <div ng-repeat="address in ctrl.addresses" ng-bind="address.formatted_address"></div>
+  </div>
+</div>
