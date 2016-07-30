@@ -132,6 +132,8 @@
 	    self.currentYearIndex = 0;
 	    self.yearSelected = self.years[self.currentYearIndex];
 
+
+
 	    self.updateMap = function(indexSelected) {
 	    	self.currentYearIndex = indexSelected;
 			self.yearSelected = self.years[indexSelected];		
@@ -151,6 +153,12 @@
 		        //now that filteredData is built use the getEachYearsData() function in the Utilities service
 		        //to add each year's data to self.years ..."data" will be the key in each obj of self.years
 		        self.years = Utilities.getEachYearsData(self.years, filteredData);
+		        //will need to reset the currentYearIndex if it goes over the number of years set in theYearRange
+/*		        if(self.currentYearIndex > (self.years.length-1){
+		        	self.currentYearIndex = 0;
+		        }*/
+		        self.dataToShowOnMap = self.years[self.currentYearIndex].data;
+	    		self.dataToShowOnGrid = filteredData;
 		    }, function (error) {//error callback
 		     	console.log("error in api request");
 		    });
