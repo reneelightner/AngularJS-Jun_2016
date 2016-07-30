@@ -1,0 +1,26 @@
+<div class="container">
+	<section class="container container-narrow">
+	    <div class="row">
+	    	<div class="col-md-12">
+	    		<h4>Choose a data set (now showing {{ctrl.dataSelected.dataLabelShort}})</h4>
+	    	</div>
+	    	<div class="btn-container" ng-repeat="data in ctrl.dataSets">
+			  	<button class='btn data-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentDataIndex}" ng-click="ctrl.updateData($index)">{{data.dataLabelShort}}</button>
+			 </div>
+			 <div class="col-md-6">
+	    		<h4>Choose a start year (now showing {{ctrl.startYear}})</h4>
+	    		<input type="type" ng-model="ctrl.startYear">
+	    	</div>
+	    	<div class="col-md-6">
+	    		<h4>Choose an end year (now showing {{ctrl.endYear}})</h4>
+	    		<input type="type" ng-model="ctrl.endYear">
+	    	</div>
+	    	<div class="col-md-12">
+	    		<h4>Choose a year (currently picked {{ctrl.yearSelected.year}}) </h4>
+	    	</div>
+			 <div class="btn-container" ng-repeat="year in ctrl.years">
+			  	<button class='btn year-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentYearIndex}" ng-click="ctrl.updateMap($index)">{{year.year}}</button>
+			 </div>
+		</div>
+	</section>
+</div>

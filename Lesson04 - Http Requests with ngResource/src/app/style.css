@@ -1,0 +1,32 @@
+body {
+  width: 600px;
+}
+
+div{
+	margin: 20px;
+}
+​
+#section-1 {
+​	padding: 10px;
+	background-color: #0f0;
+	width: 400px;
+	margin: 49px 23px 31px 32px;
+	border: 20px outset #eee;
+}
+​
+#section-2 {
+​	border: 1px solid #000;
+	background-color: #f00;
+}
+​
+#section-3 {	
+​	margin: 10px;
+	background-color: #00f;
+}
+​
+#section-4 {
+  background-color: #eee;
+  padding: 20px;
+  border: solid 3px #000;
+  margin: 20px;
+}

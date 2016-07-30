@@ -1,0 +1,20 @@
+<div class="container">
+  <h1>{{ ctrl.greeting }}</h1>
+
+  <h3>People</h3>
+  <div ng-repeat="person in ctrl.people">
+  	<div>
+  		<label>Name</label> <span ng-bind="person.name"></span>
+  	</div>
+
+  	<div>
+  		<label>Email</label> <span ng-bind="person.email"></span>
+  	</div>
+    <button ng-click="ctrl.showFriends(person)">Show Friends</button>
+
+    <h5>Friends</h5>
+    <div ng-repeat="friend in person.friends">{{friend.name}}</div>
+  	<br>
+  	<br>
+  </div>
+</div>
