@@ -26,14 +26,27 @@ $icon-font-path: "../../bootstrap-sass/assets/fonts/bootstrap/";
     width: 50px;
   }
 }
-.btn-container{
-  .btn{
-    margin-left: 15px;
-    margin-right: 15px;
-    float: left;
-    &.selected{
+
+@mixin btnHoverSelected() {
       background-color: #fff;
       border: 1px solid #ccc;
+}
+
+.well{
+  margin-top: 15px;
+}
+
+.btn-container{
+  .btn{
+    margin: 5px 0 5px 15px;
+    float: left;
+    font-size: 12px;
+    background-color: #ccc;
+    &:hover{
+      @include btnHoverSelected();
+    }
+    &.selected{
+      @include btnHoverSelected();
     }
   }
 	.year-btn{
@@ -41,6 +54,8 @@ $icon-font-path: "../../bootstrap-sass/assets/fonts/bootstrap/";
   .data-btn{
   }
 }
+
+
 #map{
         margin: 0 auto;
         width: 900px;

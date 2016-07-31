@@ -2,24 +2,31 @@
 	<section class="container container-narrow">
 	    <div class="row">
 	    	<div class="col-md-12">
-	    		<h4>Choose a data set (now showing {{ctrl.dataSelected.dataLabelShort}})</h4>
+	    		<h1>Explore the World Development Indicators database</h1>
+	    		<p>World Development Indicators (WDI) is the primary World Bank collection of development indicators, compiled from officially recognized international sources. It presents the most current and accurate global development data available, and includes national, regional and global estimates.</p>
 	    	</div>
-	    	<div class="btn-container" ng-repeat="data in ctrl.dataSets">
-			  	<button class='btn data-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentDataIndex}" ng-click="ctrl.updateData($index)">{{data.dataLabelShort}}</button>
-			 </div>
-			 <div class="col-md-6">
-	    		<h4>Choose a start year (now showing {{ctrl.startYear}})</h4>
-	    		<input type="type" ng-model="ctrl.startYear">
-	    	</div>
-	    	<div class="col-md-6">
-	    		<h4>Choose an end year (now showing {{ctrl.endYear}})</h4>
-	    		<input type="type" ng-model="ctrl.endYear">
-	    	</div>
+	    </div>
+	    <div class="well">
+	    	<h4>Select the data set and time frame you'd like to see:</h4>
+		    <h5>Choose a data set:</h5>
+		    <div class="btn-container" ng-repeat="data in ctrl.dataSets">
+				<button class='btn data-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentDataIndex}" ng-click="ctrl.updateData($index)">{{data.dataLabelShort}}</button>
+			</div>
+			<div class="clearfix"></div>
+			<h5>Choose the time frame (anywhere from 1962 - 2015):</h5>
+		    <span>Show {{ctrl.dataSelected.dataLabelShort}} data from:</span>
+		    <input type="type" ng-model="ctrl.startYear" ng-change="ctrl.updateYearRange(ctrl.startYear, ctrl.endYear)"> 
+		    <span>to:</span>
+		    <input type="type" ng-model="ctrl.endYear" ng-change="ctrl.updateYearRange(ctrl.startYear, ctrl.endYear)">
+		    <div class="clearfix"></div>
+		    <button class="btn pull-right" ng-click="ctrl.updateGridMap(ctrl.yearRange, ctrl.startYear, ctrl.endYear)">Update Map and Grid</button>
+		</div>
+		<div class="row">
 	    	<div class="col-md-12">
-	    		<h4>Choose a year (currently picked {{ctrl.yearSelected.year}}) </h4>
+	    		<h4>Choose a year to view on the map from the chosen time frame: {{ctrl.startYear}} to {{ctrl.endYear}} </h4>
 	    	</div>
 			 <div class="btn-container" ng-repeat="year in ctrl.years">
-			  	<button class='btn year-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentYearIndex}" ng-click="ctrl.updateMap($index)">{{year.year}}</button>
+			  	<button class='btn year-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentYearIndex}" ng-click="ctrl.updateYear($index)">{{year.year}}</button>
 			 </div>
 		</div>
 	</section>

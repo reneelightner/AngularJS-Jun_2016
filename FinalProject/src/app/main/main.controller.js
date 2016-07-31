@@ -19,7 +19,7 @@
 
 	    //this returns a promise object that handles the response (if its successful or error)
 	    self.getHttpData = function(theDataID, yearRange){
-		    return myResourceobject.getData({dataID:theDataID, date: yearRange}).$promise
+		    return myResourceobject.getData({dataID:theDataID, date: yearRange}).$promise;
 	    };
 
     })
@@ -27,22 +27,28 @@
 
     	var self = this;
 
-    	//instead of theYears, pass in firstYear, endYear
-    	this.getEachYearsData = function(theYears, filteredData) {
+    	//pass in firstYear, endYear, loop through each year, find its data
+    	this.getEachYearsData = function(startYear, endYear, filteredData) {
 
-    	    for (var i = 0; i < theYears.length; i++) {
+    		var starYearAsNum = parseInt(startYear);
+    		var endYearAsNum = parseInt(endYear);
+    		var theYears = [];
+    		var counter = 0;
+
+    	    for (var i = starYearAsNum; i < (endYearAsNum+1); i++) {
     			var dataForThisYear = [];
-    			var currYear = theYears[i].year;
+    			var currYear = i;
 	        	for (var k = 0; k < filteredData.length; k++) {
 	        		if(filteredData[k].year == currYear){
 	        			dataForThisYear.push(filteredData[k]);
 	        		}
 	        	}
-    			theYears[i].data = dataForThisYear;
+    			theYears[counter] = {"year": i, "data":dataForThisYear};
+    			counter++;
     		}
-
+    		console.log(theYears);
     		return theYears;
-    	}
+    	};
 
     	var countryCodes = {"AF":"AFG","AX":"ALA","AL":"ALB","DZ":"DZA","AS":"ASM","AD":"AND",
 		"AO":"AGO","AI":"AIA","AQ":"ATA","AG":"ATG","AR":"ARG","AM":"ARM","AW":"ABW","AU":"AUS",
@@ -92,7 +98,7 @@
 
 	     	return filteredData;
 
-    	}
+    	};
 
 
     })
@@ -108,43 +114,37 @@
 	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL"}
 	    ];
 
-	    self.currentDataIndex = 0;
-	    self.dataSelected = self.dataSets[self.currentDataIndex];
+	    self.updateData = function(indexSelected){
+			self.currentDataIndex = indexSelected;
+			self.dataSelected = self.dataSets[indexSelected];
+			console.log(self.dataSelected);
+		};
 
 	    self.startYear = "2005";
 	    self.endYear = "2015";
 	    self.yearRange = self.startYear+":"+self.endYear;
 
-	    self.years =[
-    		{"year":"2005"},
-    		{"year":"2006"},
-    		{"year":"2007"},
-    		{"year":"2008"},
-    		{"year":"2009"},
-	    	{"year":"2010"},
-    		{"year":"2011"},
-    		{"year":"2012"},
-    		{"year":"2013"},
-    		{"year":"2014"},
-    		{"year":"2015"}
-	    ];
-
-	    self.currentYearIndex = 0;
-	    self.yearSelected = self.years[self.currentYearIndex];
-
-
-
-	    self.updateMap = function(indexSelected) {
-	    	self.currentYearIndex = indexSelected;
-			self.yearSelected = self.years[indexSelected];		
+	    //called when the year input is changed
+	    self.updateYearRange = function(startYear, endYear) {
+	    	self.startYear = startYear;
+	    	self.endYear = endYear;
+	    	self.yearRange = startYear+":"+endYear;
+	    	console.log(self.yearRange);
 		};
 
-		//called when the app loads and when a data button is clicked
-		//also need to call this when a start year or end year is changed
-		self.updateData = function(indexSelected, theYearRange) {
+	    self.currentYearIndex = 0;
 
-	    	self.currentDataIndex = indexSelected;
-			self.dataSelected = self.dataSets[indexSelected];
+	    //called when a year button is clicked
+	    self.updateYear = function(indexSelected) {
+	    	self.currentYearIndex = indexSelected;
+			self.dataToShowOnMap = self.years[self.currentYearIndex].data;	
+			console.log(self.dataToShowOnMap);
+		};
+
+		//called when the app loads and when map and grid button is clicked
+		self.updateGridMap = function(theYearRange, startYear, endYear) {
+
+			console.log(self.yearRange);
 
 		    MainControllerDataService.getHttpData(self.dataSelected.dataID, theYearRange).then(function (response) {//Pass in the dataID which will be used in the api query string
 		     	var promiseData = response[1]; 
@@ -152,11 +152,11 @@
 		     	//console.log(filteredData);
 		        //now that filteredData is built use the getEachYearsData() function in the Utilities service
 		        //to add each year's data to self.years ..."data" will be the key in each obj of self.years
-		        self.years = Utilities.getEachYearsData(self.years, filteredData);
+		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
 		        //will need to reset the currentYearIndex if it goes over the number of years set in theYearRange
-/*		        if(self.currentYearIndex > (self.years.length-1){
+		        if(self.currentYearIndex > self.years.length){
 		        	self.currentYearIndex = 0;
-		        }*/
+		        }
 		        self.dataToShowOnMap = self.years[self.currentYearIndex].data;
 	    		self.dataToShowOnGrid = filteredData;
 		    }, function (error) {//error callback
@@ -165,7 +165,8 @@
 		};
 
 		//trigger the app on load to load the data and year set
-		self.updateData(self.currentDataIndex, self.yearRange);
+		self.updateData(0);
+		self.updateGridMap(self.yearRange, self.startYear, self.endYear);
 	    
 	});
 
