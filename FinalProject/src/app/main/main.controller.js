@@ -108,31 +108,45 @@
 
 	    self.dataSets =[
 	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG"},
-	    	{"dataLabelShort": "Internet Users", "dataLabelLong": "Internet users per 100 people", "dataID": "IT.NET.USER.P2"},
+			/*{"dataLabelShort": "GDP", "dataLabelLong": "Gross domestic product, current $", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "GDP per capita (current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Exports of goods and services (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Foreign direct investment, net inflows (BoP, current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "GINI index", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL"},
 	    	{"dataLabelShort": "Life Expectancy", "dataLabelLong": "Life expectancy at birth, total years", "dataID": "SP.DYN.LE00.IN"},
-	    	{"dataLabelShort": "Unemployment Rate", "dataLabelLong": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS"},
-	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL"}
+	    	{"dataLabelShort": "Internet Users", "dataLabelLong": "Internet users per 100 people", "dataID": "IT.NET.USER.P2"},
+	    	/*{"dataLabelShort": "Imports of goods and services (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	{"dataLabelShort": "Unemployment Rate", "dataLabelLong": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS"}
+	    	/*{"dataLabelShort": "Agriculture, value added (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "CO2 emissions (metric tons per capita)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Literacy rate, adult total (% of people ages 15 and above)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Central government debt, total (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Inflation, GDP deflator (annual %)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Poverty headcount ratio at national poverty line (% of population)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    ];
 
+	    //called when click on a data set button
 	    self.updateData = function(indexSelected){
 			self.currentDataIndex = indexSelected;
 			self.dataSelected = self.dataSets[indexSelected];
+			self.dataSet = false;//turns off disabled class on update button
 			console.log(self.dataSelected);
 		};
-
-	    self.startYear = "2005";
-	    self.endYear = "2015";
-	    self.yearRange = self.startYear+":"+self.endYear;
 
 	    //called when the year input is changed
 	    self.updateYearRange = function(startYear, endYear) {
 	    	self.startYear = startYear;
 	    	self.endYear = endYear;
 	    	self.yearRange = startYear+":"+endYear;
+	    	self.dataSet = false;//turns off disabled class on update button
 	    	console.log(self.yearRange);
 		};
 
-	    self.currentYearIndex = 0;
+	    self.currentYearIndex = 0;//automatically show the first year on the map
 
 	    //called when a year button is clicked
 	    self.updateYear = function(indexSelected) {
@@ -158,16 +172,24 @@
 		        	self.currentYearIndex = 0;
 		        }
 		        self.dataToShowOnMap = self.years[self.currentYearIndex].data;
+		        console.log(self.dataToShowOnMap);
 	    		self.dataToShowOnGrid = filteredData;
+	    		self.dataSet = true;//enable the disabled class on the update button
 		    }, function (error) {//error callback
 		     	console.log("error in api request");
 		    });
 		};
 
-		//trigger the app on load to load the data and year set
+		//trigger the app on load 
 		self.updateData(0);
+		self.updateYearRange("2005","2015");
 		self.updateGridMap(self.yearRange, self.startYear, self.endYear);
 	    
+	}).directive('myGrid', function () {
+	    return {
+	    	restrict: 'E',
+	        templateUrl: 'grid.html'
+	    };
 	});
 
   /** @ngInject */
