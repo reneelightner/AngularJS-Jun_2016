@@ -29,7 +29,7 @@
 			 <div class="btn-container" ng-repeat="year in ctrl.years">
 			  	<button class='btn year-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentYearIndex}" ng-click="ctrl.updateYear($index)">{{year.year}}</button>
 			 </div>
-			 <my-grid></my-grid>
+			 <my-grid gridData="ctrl.dataToShowOnMap"></my-grid>
 		</div>
 	</section>
 </div>

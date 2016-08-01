@@ -188,7 +188,8 @@
 	}).directive('myGrid', function () {
 	    return {
 	    	restrict: 'E',
-	        templateUrl: 'grid.html'
+	        templateUrl: 'grid.html',
+	        scope: gridData
 	    };
 	});
 
