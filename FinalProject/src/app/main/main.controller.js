@@ -168,8 +168,11 @@
 	    	self.currentYear = self.years[self.currentYearIndex].year;
 			self.dataToShowOnMap = self.years[self.currentYearIndex].data;
 			self.gridOptions.rowData = self.years[self.currentYearIndex].data;
-			self.gridOptions.api.setRowData(self.gridOptions.rowData)
-			self.gridOptions.api.refreshView();
+			if(self.gridOptions.api){
+				self.gridOptions.api.setRowData(self.gridOptions.rowData)
+				self.gridOptions.api.refreshView();			
+			}
+
 		};
 
 		//called when the app loads and when map and grid button is clicked

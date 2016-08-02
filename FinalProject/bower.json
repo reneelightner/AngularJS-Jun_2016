@@ -31,7 +31,7 @@
     "ag-grid": {
       "main": [
         "dist/ag-grid.min.js",
-        "dist/styles/ag-grid.css"
+        "dist/styles/theme-blue.css"
       ]
     }
   },
