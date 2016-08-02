@@ -100,7 +100,24 @@
 
     	};
 
-    	this.getDataForGrid = function(){
+    	this.getDataForGrid = function(filteredData){
+
+    		var i, len, res = [], obj = {}, obj1 = {}, elem;
+
+			for (i = 0, len = filteredData.length; i < len; i += 1) {
+			    elem = filteredData[i];
+			    if (!(obj1 = obj[elem.ccode])) {
+			        obj1 = obj[elem.ccode] = {
+			            ccode: elem.ccode,
+			            cname: elem.cname
+			        };
+			        res.push(obj1);
+			    }
+			    obj1[filteredData[i].year] = elem.figure;
+			}
+			console.log('Data for grid:');
+			console.log(res);
+			return res;
 
     	};
 
@@ -114,10 +131,10 @@
 			//rowData is set once a year button is clicked
           	enableSorting: true,
             columnDefs: [
-	            {field: 'figure', headerName: 'Figure'},
-	            {field: 'ccode', headerName: 'Country code'},
+	            //{field: 'figure', headerName: 'Figure'},
+	            //{field: 'year', headerName: 'Year'},
 	            {field: 'cname', headerName: 'Country'},
-	            {field: 'year', headerName: 'Year'}
+	            {field: 'ccode', headerName: 'Country code'}
             ]
         };
 
@@ -167,15 +184,14 @@
 	    	self.currentYearIndex = indexSelected;
 	    	self.currentYear = self.years[self.currentYearIndex].year;
 			self.dataToShowOnMap = self.years[self.currentYearIndex].data;
-			self.gridOptions.rowData = self.years[self.currentYearIndex].data;
+/*			self.gridOptions.rowData = self.years[self.currentYearIndex].data;
 			if(self.gridOptions.api){
 				self.gridOptions.api.setRowData(self.gridOptions.rowData)
 				self.gridOptions.api.refreshView();			
-			}
-
+			}*/
 		};
 
-		//called when the app loads and when map and grid button is clicked
+		//called when update button is clicked
 		self.updateGridMap = function(theYearRange, startYear, endYear) {
 
 			if(parseInt(startYear)>parseInt(endYear)){
@@ -187,10 +203,20 @@
 		     	self.dataSet = true;//enable the disabled class on the update button
 		     	var promiseData = response[1];
 		     	var filteredData = Utilities.getCountriesData(promiseData);
-		     	//self.dataToShowOnGrid = Utilities.getDataForGrid(filteredData);
-		     	//console.log(filteredData);
-		        //now that filteredData is built use the getEachYearsData() function in the Utilities service
-		        //to add each year's data to and year self.years ..."data" will be the key in each obj of self.years
+		     	//add all of the years to the grid's collumDefs in the grid option
+	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
+	        		var theYear = i.toString();
+		        	self.gridOptions.columnDefs.push({field: theYear, headerName: theYear});
+		        }
+		        //add the grid data to the grid options
+		     	self.gridOptions.rowData = Utilities.getDataForGrid(filteredData);
+		     	console.log(self.gridOptions);
+		        //if the grid is already drawn from before then refresh it with the new data
+		        if(self.gridOptions.api){
+					self.gridOptions.api.setRowData(self.gridOptions.rowData)
+					self.gridOptions.api.refreshView();			
+				}
+		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"
 		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
 		        self.updateYear(0);//always select the first yea when the update button is clicked
 	    		
