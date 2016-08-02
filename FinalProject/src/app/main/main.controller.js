@@ -46,7 +46,7 @@
     			theYears[counter] = {"year": i, "data":dataForThisYear};
     			counter++;
     		}
-    		console.log(theYears);
+
     		return theYears;
     	};
 
@@ -100,18 +100,33 @@
 
     	};
 
+    	this.getDataForGrid = function(){
+
+    	};
+
 
     })
     .controller('MainController', function(MainControllerDataService, Utilities) {
 
 	    var self = this;
 
+		self.gridOptions = {
+			//rowData is set once a year button is clicked
+          	enableSorting: true,
+            columnDefs: [
+	            {field: 'figure', headerName: 'Figure'},
+	            {field: 'ccode', headerName: 'Country code'},
+	            {field: 'cname', headerName: 'Country'},
+	            {field: 'year', headerName: 'Year'}
+            ]
+        };
+
 	    self.dataSets =[
 	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG"},
 			/*{"dataLabelShort": "GDP", "dataLabelLong": "Gross domestic product, current $", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "GDP per capita (current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "GDP per capita", "dataLabelLong": "Gross domestic product per capita, current $", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Exports of goods and services (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	/*{"dataLabelShort": "Exports per of GDP", "dataLabelLong": "Exports of goods and services as a percent of GDP", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "Foreign direct investment, net inflows (BoP, current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "GINI index", "dataLabelLong": "xx", "dataID": "xx"}*/
@@ -133,6 +148,7 @@
 	    self.updateData = function(indexSelected){
 			self.currentDataIndex = indexSelected;
 			self.dataSelected = self.dataSets[indexSelected];
+			self.dataLabelLong = self.dataSelected.dataLabelLong;
 			self.dataSet = false;//turns off disabled class on update button
 			console.log(self.dataSelected);
 		};
@@ -146,35 +162,35 @@
 	    	console.log(self.yearRange);
 		};
 
-	    self.currentYearIndex = 0;//automatically show the first year on the map
-
 	    //called when a year button is clicked
 	    self.updateYear = function(indexSelected) {
 	    	self.currentYearIndex = indexSelected;
-			self.dataToShowOnMap = self.years[self.currentYearIndex].data;	
-			console.log(self.dataToShowOnMap);
+	    	self.currentYear = self.years[self.currentYearIndex].year;
+			self.dataToShowOnMap = self.years[self.currentYearIndex].data;
+			self.gridOptions.rowData = self.years[self.currentYearIndex].data;
+			self.gridOptions.api.setRowData(self.gridOptions.rowData)
+			self.gridOptions.api.refreshView();
 		};
 
 		//called when the app loads and when map and grid button is clicked
 		self.updateGridMap = function(theYearRange, startYear, endYear) {
 
-			console.log(self.yearRange);
+			if(parseInt(startYear)>parseInt(endYear)){
+				alert("Start year "+startYear+" is larger than end year "+endYear);
+				return;
+			}
 
 		    MainControllerDataService.getHttpData(self.dataSelected.dataID, theYearRange).then(function (response) {//Pass in the dataID which will be used in the api query string
-		     	var promiseData = response[1]; 
+		     	self.dataSet = true;//enable the disabled class on the update button
+		     	var promiseData = response[1];
 		     	var filteredData = Utilities.getCountriesData(promiseData);
+		     	//self.dataToShowOnGrid = Utilities.getDataForGrid(filteredData);
 		     	//console.log(filteredData);
 		        //now that filteredData is built use the getEachYearsData() function in the Utilities service
-		        //to add each year's data to self.years ..."data" will be the key in each obj of self.years
+		        //to add each year's data to and year self.years ..."data" will be the key in each obj of self.years
 		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
-		        //will need to reset the currentYearIndex if it goes over the number of years set in theYearRange
-		        if(self.currentYearIndex > self.years.length){
-		        	self.currentYearIndex = 0;
-		        }
-		        self.dataToShowOnMap = self.years[self.currentYearIndex].data;
-		        console.log(self.dataToShowOnMap);
-	    		self.dataToShowOnGrid = filteredData;
-	    		self.dataSet = true;//enable the disabled class on the update button
+		        self.updateYear(0);//always select the first yea when the update button is clicked
+	    		
 		    }, function (error) {//error callback
 		     	console.log("error in api request");
 		    });
@@ -184,14 +200,17 @@
 		self.updateData(0);
 		self.updateYearRange("2005","2015");
 		self.updateGridMap(self.yearRange, self.startYear, self.endYear);
+
 	    
 	}).directive('myGrid', function () {
 	    return {
-	    	restrict: 'E',
-	        templateUrl: 'grid.html',
-	        scope: gridData
+	        restrict: 'E',
+	        templateUrl: 'app/main/grid.html', //path from index.html
+	        scope: {
+	          gridOptions : '='
+	        }
 	    };
-	});
+ 	});
 
   /** @ngInject */
 
