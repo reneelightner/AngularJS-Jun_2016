@@ -113,10 +113,9 @@
 			        };
 			        res.push(obj1);
 			    }
-			    obj1[filteredData[i].year] = elem.figure;
+			    obj1[filteredData[i].year] = (Math.round(elem.figure * 10) / 10).toFixed(2);//Round the figure to tenths pace
 			}
-			console.log('Data for grid:');
-			console.log(res);
+
 			return res;
 
     	};
@@ -128,15 +127,25 @@
 	    var self = this;
 
 		self.gridOptions = {
-			//rowData is set once a year button is clicked
+			//rowData is set once update button is clicked
           	enableSorting: true,
+          	enableFilter: true,
+          	sizeColumnsToFit: true,
+          	onGridReady: function(params){
+          		params.api.sizeColumnsToFit();
+          	},
             columnDefs: [
-	            //{field: 'figure', headerName: 'Figure'},
-	            //{field: 'year', headerName: 'Year'},
 	            {field: 'cname', headerName: 'Country'},
-	            {field: 'ccode', headerName: 'Country code'}
+	            {field: 'ccode', headerName: 'ISO3'}
+	            //other years are set once update button is clicked
             ]
         };
+
+
+        self.onFilterChanged = function (value) {
+		    self.gridOptions.api.setQuickFilter(value);
+		};
+
 
 	    self.dataSets =[
 	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG"},
@@ -184,11 +193,8 @@
 	    	self.currentYearIndex = indexSelected;
 	    	self.currentYear = self.years[self.currentYearIndex].year;
 			self.dataToShowOnMap = self.years[self.currentYearIndex].data;
-/*			self.gridOptions.rowData = self.years[self.currentYearIndex].data;
-			if(self.gridOptions.api){
-				self.gridOptions.api.setRowData(self.gridOptions.rowData)
-				self.gridOptions.api.refreshView();			
-			}*/
+			console.log("data to show on map:");
+			console.log(self.dataToShowOnMap);
 		};
 
 		//called when update button is clicked
@@ -210,11 +216,11 @@
 		        }
 		        //add the grid data to the grid options
 		     	self.gridOptions.rowData = Utilities.getDataForGrid(filteredData);
-		     	console.log(self.gridOptions);
+		     	
 		        //if the grid is already drawn from before then refresh it with the new data
 		        if(self.gridOptions.api){
 					self.gridOptions.api.setRowData(self.gridOptions.rowData)
-					self.gridOptions.api.refreshView();			
+					self.gridOptions.api.refreshView();	
 				}
 		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"
 		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
@@ -235,9 +241,40 @@
 	    return {
 	        restrict: 'E',
 	        templateUrl: 'app/main/grid.html', //path from index.html
-	        scope: {
+	        scope: {// attributes bound to the scope of the directive
 	          gridOptions : '='
 	        }
+	    };
+ 	}).directive('myMap', function () {
+ 		// constants
+ 		var map = d3.geomap.choropleth()
+            .geofile('assets/countries.json')//the topojson file loaded to draw the map countires
+            .colors(colorbrewer.YlGnBu[9]) //d3.geomap comes with support for color schemes from the ColorBrewer project.
+            .column('figure') //data used to color the map and legend
+            .format(function(d) {return (Math.round(d * 10) / 10).toFixed(2)+"%";}) //defines how to format values in the map legend and in tooltips
+            .legend(true) //if you don't want to display a legend or make your own set it to false
+            .unitId('ccode')//which in the data contains the ID values of the geographic units displayed on the map (in this case iso3)
+            .zoomFactor(5); //zoom factor to use when a map unit is clicked
+	    return {
+	        restrict: 'E',
+	        template:"<div id='map'></div>",
+	        scope: { // attributes bound to the scope of the directive
+		      val: '='
+		    },
+		    link: function (scope, element, attrs) {
+		    	scope.$watch('val', function (newVal, oldVal) {// whenever the bound 'val' expression changes, execute this 
+			        //console.log(newVal, oldVal);
+			        // clear the elements inside of the directive
+			        if(oldVal != newVal){
+			        	d3.select('#map svg').remove();
+			        }
+    
+        			//draw the map
+        			d3.select('#map')
+                		.datum(newVal)
+                		.call(map.draw, map);
+			    });
+		    }
 	    };
  	});
 
