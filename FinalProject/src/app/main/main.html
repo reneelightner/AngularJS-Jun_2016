@@ -19,30 +19,14 @@
 		    <span>to:</span>
 		    <input type="type" ng-model="ctrl.endYear" ng-change="ctrl.updateYearRange(ctrl.startYear, ctrl.endYear)">
 		    <div class="clearfix"></div>
+		    
+		    <ul class="nav navbar-nav">
+		    	<li ui-sref-active="active"><a ui-sref="main.map">View Map</a></li>
+        		<li ui-sref-active="active"><a ui-sref="main.grid">View Grid</a></li>	
+		    </ul>
 		    <button class="btn pull-right" ng-click="ctrl.updateGridMap(ctrl.yearRange, ctrl.startYear, ctrl.endYear)" ng-class="{'disabled': ctrl.dataSet}">Update Map and Grid</button>
 		    <div class="clearfix"></div>
 		</div>
-		<div class="row">
-	    	<div class="col-md-12">
-	    		<h4>Map View:</h4>
-	    		<h5>Choose a year to view from the chosen time frame: {{ctrl.startYear}} to {{ctrl.endYear}}:</h5>	    	
-	    		<div class="btn-container" ng-repeat="year in ctrl.years">
-			  		<button class='btn year-btn' index="{{$index}}" ng-class="{'selected': $index === ctrl.currentYearIndex}" ng-click="ctrl.updateYear($index)">{{year.year}}</button>
-			 	</div>
-			 	<div class="clearfix"></div>
-			 	<h6>Now showing {{ctrl.dataLabelLong}} for {{ctrl.currentYear}}</h6>
- 				<div ng-if="ctrl.dataToShowOnMap">
-			 		<my-map val="ctrl.dataToShowOnMap"></my-map>
-			 	</div>
-	    	</div>
-			<div class="col-md-12">
-				<h4>Grid View:</h4>
-				<h6>Now showing {{ctrl.dataLabelLong}} for all countires</h6>
-				<input placeholder="Filter..." type="text" ng-model="ctrl.searchText" ng-change="ctrl.onFilterChanged(ctrl.searchText)"/>
-				<div ng-if="ctrl.gridOptions.rowData">
-			 		<my-grid grid-options="ctrl.gridOptions"</my-grid>
-			 	</div>
-			</div>
-		</div>
+		<div ui-view></div>
 	</section>
 </div>
