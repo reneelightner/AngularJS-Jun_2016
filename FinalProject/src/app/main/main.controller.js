@@ -9,18 +9,16 @@
 
 	    //FOR THE GRID
 		self.gridOptions = {
-			//rowData is set once update button is clicked
+			//rowData and columnDefs are set once update button is clicked
           	enableSorting: true,
           	enableFilter: true,
           	sizeColumnsToFit: true,
           	onGridReady: function(params){
-          		params.api.sizeColumnsToFit();
-          	},
-            columnDefs: [
-	            {field: 'cname', headerName: 'Country'},
-	            {field: 'ccode', headerName: 'ISO3'}
-	            //other years are set once update button is clicked
-            ]
+/*          		if(self.endYear - self.startYear < 13 ){
+          			  
+          		}*/    
+          		params.api.sizeColumnsToFit(); 
+          	}
         };
 
         //FOR THE GRID
@@ -28,9 +26,15 @@
 		    self.gridOptions.api.setQuickFilter(value);
 		};
 
+		var columnDefsToStartWith = [
+	            {field: 'cname', headerName: 'Country'},
+	            {field: 'ccode', headerName: 'ISO3'}
+	            //other years are set once update button is clicked
+        ];
+
 
 	    self.dataSets =[
-	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG"},
+	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG", "dataLabelUnit":"%"},
 			/*{"dataLabelShort": "GDP", "dataLabelLong": "Gross domestic product, current $", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "GDP per capita", "dataLabelLong": "Gross domestic product per capita, current $", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
@@ -39,11 +43,11 @@
 	    	/*{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "GINI index", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL"},
-	    	{"dataLabelShort": "Life Expectancy", "dataLabelLong": "Life expectancy at birth, total years", "dataID": "SP.DYN.LE00.IN"},
-	    	{"dataLabelShort": "Internet Users", "dataLabelLong": "Internet users per 100 people", "dataID": "IT.NET.USER.P2"},
+	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL", "dataLabelUnit": " people"},
+	    	{"dataLabelShort": "Life Expectancy", "dataLabelLong": "Life expectancy at birth, total years", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" years"},
+	    	{"dataLabelShort": "Internet Users", "dataLabelLong": "Internet users per 100 people", "dataID": "IT.NET.USER.P2", "dataLabelUnit": " people"},
 	    	/*{"dataLabelShort": "Imports of goods and services (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	{"dataLabelShort": "Unemployment Rate", "dataLabelLong": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS"}
+	    	{"dataLabelShort": "Unemployment Rate", "dataLabelLong": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS", "dataLabelUnit": "%"}
 	    	/*{"dataLabelShort": "Agriculture, value added (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "CO2 emissions (metric tons per capita)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "Literacy rate, adult total (% of people ages 15 and above)", "dataLabelLong": "xx", "dataID": "xx"}*/
@@ -57,8 +61,9 @@
 			self.currentDataIndex = indexSelected;
 			self.dataSelected = self.dataSets[indexSelected];
 			self.dataLabelLong = self.dataSelected.dataLabelLong;
+			self.unit = self.dataSelected.dataLabelUnit;
 			self.dataSet = false;//turns off disabled class on update button
-			console.log(self.dataSelected);
+			console.log(self.unit);
 		};
 
 	    //called when the year input is changed
@@ -80,6 +85,7 @@
 			console.log(self.dataToShowOnMap);
 		};
 
+
 		//called when update button is clicked
 		self.updateGridMap = function(theYearRange, startYear, endYear) {
 
@@ -94,13 +100,15 @@
 		     	//filteredData IS USED FOR MAP AND GRID
 		     	var filteredData = Utilities.getCountriesData(promiseData);
 		     	//FOR THE GRID
+		     	//add the country and year collumn defs
+		     	self.gridOptions.columnDefs = columnDefsToStartWith;
 		     	//add all of the years to the grid's collumDefs in the grid option
 	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
 	        		var theYear = i.toString();
 		        	self.gridOptions.columnDefs.push({field: theYear, headerName: theYear});
 		        }
 		        //add the grid data to the grid options
-		     	self.gridOptions.rowData = Utilities.getDataForGrid(filteredData);
+		     	self.gridOptions.rowData = Utilities.getDataForGrid(filteredData, self.unit);
 		        //if the grid is already drawn from before then refresh it with the new data
 		        if(self.gridOptions.api){
 					self.gridOptions.api.setRowData(self.gridOptions.rowData)
@@ -127,6 +135,9 @@
 	        templateUrl: 'app/main/gridtemp.html', //path from index.html
 	        scope: {// attributes bound to the scope of the directive
 	          gridOptions : '='
+	        },
+	        link: function (scope, element, attrs) {	
+	        	console.log(scope.gridOptions);
 	        }
 	    };
  	}).directive('myMap', function () {
@@ -134,8 +145,7 @@
  		var map = d3.geomap.choropleth()
             .geofile('assets/countries.json')//the topojson file loaded to draw the map countires
             .colors(colorbrewer.YlGnBu[9]) //d3.geomap comes with support for color schemes from the ColorBrewer project.
-            .column('figure') //data used to color the map and legend
-            .format(function(d) {return (Math.round(d * 10) / 10).toFixed(2)+"%";}) //defines how to format values in the map legend and in tooltips
+            .column('figure') //data used to color the map and legend 
             .legend(true) //if you don't want to display a legend or make your own set it to false
             .unitId('ccode')//which in the data contains the ID values of the geographic units displayed on the map (in this case iso3)
             .zoomFactor(5); //zoom factor to use when a map unit is clicked
@@ -143,16 +153,18 @@
 	        restrict: 'E',
 	        template:"<div id='map'></div>",
 	        scope: { // attributes bound to the scope of the directive
-		      val: '='
+		      val: '=',
+		      unit: '='
 		    },
-		    link: function (scope, element, attrs) {
-		    	scope.$watch('val', function (newVal, oldVal) {// whenever the bound 'val' expression changes, execute this 
-			        //console.log(newVal, oldVal);
+		    link: function (scope, element, attrs) {	
+		    	scope.$watch('unit', function (newVal, oldVal) {// whenever the bound 'unit' expression changes, execute this 
+		    		map.format(function(d) {return (Math.round(d * 10) / 10).toFixed(2)+newVal;});//add the format for the map legend that includes the unit 
+		    	});
+		    	scope.$watch('val', function (newVal, oldVal) {// whenever the bound 'val' expression changes, execute this 			        
 			        // clear the elements inside of the directive
 			        if(oldVal != newVal){
 			        	d3.select('#map svg').remove();
 			        }
-    
         			//draw the map
         			d3.select('#map')
                 		.datum(newVal)

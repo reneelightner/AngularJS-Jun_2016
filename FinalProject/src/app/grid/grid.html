@@ -1,0 +1,14 @@
+<div class="container">
+	<section class="container container-narrow">
+		<div class="row">
+			<div class="col-md-12">
+				<h4>Grid View:</h4>
+				<h6>Now showing {{ctrl.dataLabelLong}} for all countires</h6>
+				<input placeholder="Filter..." type="text" ng-model="ctrl.searchText" ng-change="ctrl.onFilterChanged(ctrl.searchText)"/>
+				<div ng-if="ctrl.gridOptions.rowData">
+			 		<my-grid grid-options="ctrl.gridOptions"</my-grid>
+			 	</div>
+	    	</div>
+		</div>
+	</section>
+</div>

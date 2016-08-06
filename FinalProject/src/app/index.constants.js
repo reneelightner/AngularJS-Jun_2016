@@ -109,7 +109,7 @@
 
     	};
 
-    	this.getDataForGrid = function(filteredData){
+    	this.getDataForGrid = function(filteredData, dataUnit){
 
     		var i, len, res = [], obj = {}, obj1 = {}, elem;
 
@@ -122,7 +122,7 @@
 			        };
 			        res.push(obj1);
 			    }
-			    obj1[filteredData[i].year] = (Math.round(elem.figure * 10) / 10).toFixed(2);//Round the figure to tenths pace
+			    obj1[filteredData[i].year] = (Math.round(elem.figure * 10) / 10).toFixed(2)+dataUnit;//Round the figure to tenths pace
 			}
 
 			return res;
