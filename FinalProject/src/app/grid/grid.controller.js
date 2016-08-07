@@ -5,5 +5,5 @@ angular.module('MyApp.Grid')
 
 	var self = this;
 
-})
+});
 

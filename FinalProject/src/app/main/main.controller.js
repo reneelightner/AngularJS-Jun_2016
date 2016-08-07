@@ -7,31 +7,10 @@
 
 	    var self = this;
 
-	    //FOR THE GRID
-		self.gridOptions = {
-			//rowData and columnDefs are set once update button is clicked
-          	enableSorting: true,
-          	enableFilter: true,
-          	sizeColumnsToFit: true,
-          	onGridReady: function(params){
-/*          		if(self.endYear - self.startYear < 13 ){
-          			  
-          		}*/    
-          		params.api.sizeColumnsToFit(); 
-          	}
-        };
-
-        //FOR THE GRID
+        //GRID's filter
         self.onFilterChanged = function (value) {
 		    self.gridOptions.api.setQuickFilter(value);
 		};
-
-		var columnDefsToStartWith = [
-	            {field: 'cname', headerName: 'Country'},
-	            {field: 'ccode', headerName: 'ISO3'}
-	            //other years are set once update button is clicked
-        ];
-
 
 	    self.dataSets =[
 	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG", "dataLabelUnit":"%"},
@@ -44,7 +23,7 @@
 	    	/*{"dataLabelShort": "GINI index", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	/*{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL", "dataLabelUnit": " people"},
-	    	{"dataLabelShort": "Life Expectancy", "dataLabelLong": "Life expectancy at birth, total years", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" years"},
+	    	{"dataLabelShort": "Life Expectancy", "dataLabelLong": "Life expectancy at birth, total years", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" yrs"},
 	    	{"dataLabelShort": "Internet Users", "dataLabelLong": "Internet users per 100 people", "dataID": "IT.NET.USER.P2", "dataLabelUnit": " people"},
 	    	/*{"dataLabelShort": "Imports of goods and services (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
 	    	{"dataLabelShort": "Unemployment Rate", "dataLabelLong": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS", "dataLabelUnit": "%"}
@@ -63,7 +42,6 @@
 			self.dataLabelLong = self.dataSelected.dataLabelLong;
 			self.unit = self.dataSelected.dataLabelUnit;
 			self.dataSet = false;//turns off disabled class on update button
-			console.log(self.unit);
 		};
 
 	    //called when the year input is changed
@@ -72,19 +50,26 @@
 	    	self.endYear = endYear;
 	    	self.yearRange = startYear+":"+endYear;
 	    	self.dataSet = false;//turns off disabled class on update button
-	    	console.log(self.yearRange);
 		};
 
 		//FOR THE MAP
 	    //called when a year button is clicked
 	    self.updateYear = function(indexSelected) {
 	    	self.currentYearIndex = indexSelected;
-	    	self.currentYear = self.years[self.currentYearIndex].year;
-			self.dataToShowOnMap = self.years[self.currentYearIndex].data;
-			console.log("data to show on map:");
-			console.log(self.dataToShowOnMap);
+	    	self.currentYear = self.years[indexSelected].year;
+			self.dataToShowOnMap = self.years[indexSelected].data;
 		};
 
+		self.gridOptions = {
+		    enableSorting: true,
+		    enableFilter: true,
+		    sizeColumnsToFit: true,
+		    onGridReady: function(params){
+		        if(self.endYear - self.startYear < 13){
+		          	params.api.sizeColumnsToFit(); 
+		        }
+		    }
+		 };
 
 		//called when update button is clicked
 		self.updateGridMap = function(theYearRange, startYear, endYear) {
@@ -93,31 +78,46 @@
 				alert("Start year "+startYear+" is larger than end year "+endYear);
 				return;
 			}
+			if(parseInt(startYear)>2015){
+				alert("You must choose a time frame ending in 2015 at the latest.");
+				return;
+			}
+			if(parseInt(endYear)<1962){
+				alert("You must choose a time frame beginning in 1962 at the earliest.");
+				return;
+			}
 
 		    MainControllerDataService.getHttpData(self.dataSelected.dataID, theYearRange).then(function (response) {//Pass in the dataID which will be used in the api query string
 		     	self.dataSet = true;//enable the disabled class on the update button
 		     	var promiseData = response[1];
-		     	//filteredData IS USED FOR MAP AND GRID
+		     	//console.log(promiseData);
+		     	//filteredData -- USED FOR MAP AND GRID
 		     	var filteredData = Utilities.getCountriesData(promiseData);
 		     	//FOR THE GRID
-		     	//add the country and year collumn defs
-		     	self.gridOptions.columnDefs = columnDefsToStartWith;
-		     	//add all of the years to the grid's collumDefs in the grid option
-	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
-	        		var theYear = i.toString();
-		        	self.gridOptions.columnDefs.push({field: theYear, headerName: theYear});
-		        }
+		     	var rowData = Utilities.getDataForGrid(filteredData, self.unit);
+		     	var colDefs = Utilities.upDateGridData(startYear, endYear);
+		     	//add the collumn defs to the grid options
+		        self.gridOptions.columnDefs = colDefs;
 		        //add the grid data to the grid options
-		     	self.gridOptions.rowData = Utilities.getDataForGrid(filteredData, self.unit);
-		        //if the grid is already drawn from before then refresh it with the new data
+		     	self.gridOptions.rowData = rowData;
+		     	//if the grid is already drawn from before then refresh it with the:
+		        //new column defs, new data
 		        if(self.gridOptions.api){
-					self.gridOptions.api.setRowData(self.gridOptions.rowData)
+		        	self.gridOptions.api.setColumnDefs(colDefs);
+					self.gridOptions.api.setRowData(rowData);
 					self.gridOptions.api.refreshView();	
+					if(endYear - startYear < 13){
+          				self.gridOptions.api.sizeColumnsToFit();
+          			}
 				}
 				//FOR THE MAP
 		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"
 		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
-		        self.updateYear(0);//always select the first yea when the update button is clicked	    		
+		        self.updateYear(0);//always select the first yea when the update button is clicked
+		        //set the labels for the map and grid
+		        self.dataLabelLongMAPGRID = self.dataLabelLong;	  
+		        self.startYearMAPGRID = self.startYear;  
+		        self.endYearMAPGRID = self.endYear;  		
 		    }, function (error) {//error callback
 		     	console.log("error in api request");
 		    });
@@ -130,16 +130,15 @@
 
 	    
 	}).directive('myGrid', function () {
+
 	    return {
 	        restrict: 'E',
 	        templateUrl: 'app/main/gridtemp.html', //path from index.html
 	        scope: {// attributes bound to the scope of the directive
 	          gridOptions : '='
-	        },
-	        link: function (scope, element, attrs) {	
-	        	console.log(scope.gridOptions);
 	        }
 	    };
+
  	}).directive('myMap', function () {
  		
  		var map = d3.geomap.choropleth()
@@ -149,6 +148,7 @@
             .legend(true) //if you don't want to display a legend or make your own set it to false
             .unitId('ccode')//which in the data contains the ID values of the geographic units displayed on the map (in this case iso3)
             .zoomFactor(5); //zoom factor to use when a map unit is clicked
+
 	    return {
 	        restrict: 'E',
 	        template:"<div id='map'></div>",
@@ -172,6 +172,7 @@
 			    });
 		    }
 	    };
+
  	});
 
   /** @ngInject */

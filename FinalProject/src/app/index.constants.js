@@ -17,7 +17,7 @@
 
 	    var myResourceobject = $resource("/countries/indicators/:dataID",{
 	    	format: 'json',
-	    	per_page: 3000
+	    	per_page: 15000
 	    },{
 	    	getData:{
 	    		method: "GET",
@@ -96,7 +96,7 @@
     		var filteredData = [];//this is where all of the filtered data (just the countries) will go	 
 
 	     	angular.forEach(dataFromPromise, function(value, key){//allData is an object..need to use for each
-	     		if(countryCodes[value.country.id] && value.value !== null){//make sure we are pulling out countries in the countryCode list
+	     		if(countryCodes[value.country.id] && value.value !==null){//make sure we are pulling out countries in the countryCode list
 		     		var figure = value.value;
 		     		var ccode = countryCodes[value.country.id];//replace the two letter country with w/3 letter country code from countryCode obj
 		     		var cname = value.country.value;
@@ -129,7 +129,24 @@
 
     	};
 
+    	this.upDateGridData = function(startYear, endYear){
 
-    })
+		     	//reset the collumn defs
+		     	var colDefs = [
+	            	{field: 'cname', headerName: 'Country'},
+	            	{field: 'ccode', headerName: 'ISO3'}
+        		];
+		     	//depending on the start and end year:
+		     	//add all of the years to the grid's collum defs 
+	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
+	        		var theYear = i.toString();
+		        	colDefs.push({field: theYear, headerName: theYear});
+		        }
+		        
+				return colDefs;
+		};
+
+
+    });
 
 })();
