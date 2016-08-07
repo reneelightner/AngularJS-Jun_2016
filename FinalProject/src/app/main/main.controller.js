@@ -39,8 +39,6 @@
 	    self.updateData = function(indexSelected){
 			self.currentDataIndex = indexSelected;
 			self.dataSelected = self.dataSets[indexSelected];
-			self.dataLabelLong = self.dataSelected.dataLabelLong;
-			self.unit = self.dataSelected.dataLabelUnit;
 			self.dataSet = false;//turns off disabled class on update button
 		};
 
@@ -90,9 +88,9 @@
 		    MainControllerDataService.getHttpData(self.dataSelected.dataID, theYearRange).then(function (response) {//Pass in the dataID which will be used in the api query string
 		     	self.dataSet = true;//enable the disabled class on the update button
 		     	var promiseData = response[1];
-		     	//console.log(promiseData);
-		     	//filteredData -- USED FOR MAP AND GRID
+		     	//filteredData -- array of objs, one obj for each country's year USED FOR MAP AND GRID
 		     	var filteredData = Utilities.getCountriesData(promiseData);
+		     	self.unit = self.dataSelected.dataLabelUnit;//unit for map and grid
 		     	//FOR THE GRID
 		     	var rowData = Utilities.getDataForGrid(filteredData, self.unit);
 		     	var colDefs = Utilities.upDateGridData(startYear, endYear);
@@ -113,9 +111,11 @@
 				//FOR THE MAP
 		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"
 		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
-		        self.updateYear(0);//always select the first yea when the update button is clicked
-		        //set the labels for the map and grid
-		        self.dataLabelLongMAPGRID = self.dataLabelLong;	  
+		        self.updateYear(0);//selects the year and its data to show on map, always select the first yea when the update button is clicked
+		        self.domainForLengend = Utilities.calcLegendDomain(filteredData);
+		        //FOR THE MAP AND GRID
+		        //set the text labels for the map and grid
+		        self.dataLabelLongMAPGRID = self.dataSelected.dataLabelLong;	  
 		        self.startYearMAPGRID = self.startYear;  
 		        self.endYearMAPGRID = self.endYear;  		
 		    }, function (error) {//error callback
@@ -154,9 +154,13 @@
 	        template:"<div id='map'></div>",
 	        scope: { // attributes bound to the scope of the directive
 		      val: '=',
-		      unit: '='
+		      unit: '=',
+		      legenddomain: "="
 		    },
-		    link: function (scope, element, attrs) {	
+		    link: function (scope, element, attrs) {
+		    	scope.$watch('legenddomain', function (newVal, oldVal) {
+		    		map.domain(newVal);
+		    	});
 		    	scope.$watch('unit', function (newVal, oldVal) {// whenever the bound 'unit' expression changes, execute this 
 		    		map.format(function(d) {return (Math.round(d * 10) / 10).toFixed(2)+newVal;});//add the format for the map legend that includes the unit 
 		    	});

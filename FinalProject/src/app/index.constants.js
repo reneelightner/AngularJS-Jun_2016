@@ -36,6 +36,7 @@
 
     	var self = this;
 
+    	//MAP
     	//pass in firstYear, endYear, loop through each year, find its data
     	this.getEachYearsData = function(startYear, endYear, filteredData) {
 
@@ -109,6 +110,7 @@
 
     	};
 
+    	//GRID
     	this.getDataForGrid = function(filteredData, dataUnit){
 
     		var i, len, res = [], obj = {}, obj1 = {}, elem;
@@ -129,6 +131,8 @@
 
     	};
 
+    	//GRID
+    	//get the columns that will show in the grid (one col for each year)
     	this.upDateGridData = function(startYear, endYear){
 
 		     	//reset the collumn defs
@@ -144,6 +148,24 @@
 		        }
 		        
 				return colDefs;
+		};
+
+		//MAP
+		//for the map's legend domain find the min and max values of all years' data
+		this.calcLegendDomain = function(filteredData){
+
+			var i, len, elem, allValues = [], maxVal, minVal;
+
+			for (i = 0, len = filteredData.length; i < len; i++) {
+			    elem = filteredData[i];
+
+			    allValues.push(parseFloat(elem.figure));
+			}
+
+			maxVal = d3.max(allValues);
+			minVal = d3.min(allValues);
+
+			return [minVal, maxVal];
 		};
 
 
