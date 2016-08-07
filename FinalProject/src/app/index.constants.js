@@ -68,7 +68,7 @@
 		"UG":"UGA","UA":"UKR","AE":"ARE","GB":"GBR","US":"USA","UM":"UMI","UY":"URY","UZ":"UZB",
 		"VU":"VUT","VE":"VEN","VN":"VNM","VI":"VIR","WF":"WLF","EH":"ESH","YE":"YEM","ZM":"ZMB","ZW":"ZWE"};
 
-    	this.getCountriesData = function(dataFromPromise){
+    	self.getCountriesData = function(dataFromPromise){
 
     		var filteredData = [];//this is where all of the filtered data (just the countries) will go	 
 
@@ -82,16 +82,46 @@
 		     	}
 	     	});
 
+	     	self.filteredDataGlobal = filteredData;
+
 	     	return filteredData;
 
     	};
 
+    	self.getFilteredData = function(){
+			return self.filteredDataGlobal;
+		};
+
     })
+
+	.service('SetGlobals',function(){
+
+		var self = this;
+
+		self.returnGlobals = function(startYear, endYear){
+
+			self.startYearGlobal = startYear;
+			self.endYearGlobal = endYear;
+
+		};
+
+		self.getStartYear = function(){
+			return self.startYearGlobal;
+		};
+
+		self.getEndYear = function(){
+			return self.endYearGlobal;
+		};
+
+
+	})
 
 	.service('MapUtilities',function(){
 
+		var self = this;
+
 		//for the map's legend domain find the min and max values of all years' data
-		this.calcLegendDomain = function(filteredData){
+		self.calcLegendDomain = function(filteredData){
 
 			var i, len, elem, allValues = [], maxVal, minVal;
 
@@ -108,7 +138,7 @@
 		};
 
 		//pass in firstYear, endYear, loop through each year, find its data
-    	this.getEachYearsData = function(startYear, endYear, filteredData) {
+    	self.getEachYearsData = function(startYear, endYear, filteredData) {
 
     		var starYearAsNum = parseInt(startYear);
     		var endYearAsNum = parseInt(endYear);
@@ -134,8 +164,10 @@
 
 	.service('GridUtilities',function(){
 
+		var self = this;
+
 		//get the columns that will show in the grid (one col for each year)
-    	this.upDateGridData = function(startYear, endYear){
+    	self.upDateGridData = function(startYear, endYear){
 
 		     	//reset the collumn defs
 		     	var colDefs = [
@@ -152,7 +184,7 @@
 				return colDefs;
 		};
 
-		this.getDataForGrid = function(filteredData, dataUnit){
+		self.getDataForGrid = function(filteredData, dataUnit){
 
     		var i, len, res = [], obj = {}, obj1 = {}, elem;
 

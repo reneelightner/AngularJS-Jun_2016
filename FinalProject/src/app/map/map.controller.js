@@ -1,8 +1,15 @@
 
 angular.module('MyApp.Map')
 
-.controller('MapController', function(MainControllerDataService, Utilities) {
+.controller('MapController', function(Utilities, SetGlobals, MapUtilities) {
+
 	var self = this;
+	
+	//trying to get the filteredData from the Utilities service but its not ready
+	//self.filteredData = Utilities.getFilteredData();
+
+	//console.log(self.filteredData);
+
 }).directive('myMap', function () {
  		
  		var map = d3.geomap.choropleth()

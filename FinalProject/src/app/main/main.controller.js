@@ -3,7 +3,7 @@
 
   angular
     .module('MyApp.Main')
-    .controller('MainController', function(UI_STATES, MainControllerDataService, Utilities, MapUtilities, GridUtilities) {
+    .controller('MainController', function(UI_STATES, MainControllerDataService, SetGlobals, Utilities, MapUtilities, GridUtilities) {
 
 	    var self = this;
 
@@ -92,6 +92,7 @@
 		     	//filteredData -- array of objs, one obj for each country's year USED FOR MAP AND GRID
 		     	var filteredData = Utilities.getCountriesData(promiseData);
 		     	self.unit = self.dataSelected.dataLabelUnit;//unit for map and grid
+		     	SetGlobals.returnGlobals(startYear, endYear);
 		     	//FOR THE GRID
 		     	var rowData = GridUtilities.getDataForGrid(filteredData, self.unit);
 		     	var colDefs = GridUtilities.upDateGridData(startYear, endYear);

@@ -1,7 +1,7 @@
 
 angular.module('MyApp.Grid')
 
-.controller('GridController', function(MainControllerDataService, Utilities) {
+.controller('GridController', function(Utilities, SetGlobals, GridUtilities) {
 
 	var self = this;
 
