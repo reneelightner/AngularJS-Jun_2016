@@ -36,30 +36,6 @@
 
     	var self = this;
 
-    	//MAP
-    	//pass in firstYear, endYear, loop through each year, find its data
-    	this.getEachYearsData = function(startYear, endYear, filteredData) {
-
-    		var starYearAsNum = parseInt(startYear);
-    		var endYearAsNum = parseInt(endYear);
-    		var theYears = [];
-    		var counter = 0;
-
-    	    for (var i = starYearAsNum; i < (endYearAsNum+1); i++) {
-    			var dataForThisYear = [];
-    			var currYear = i;
-	        	for (var k = 0; k < filteredData.length; k++) {
-	        		if(filteredData[k].year == currYear){
-	        			dataForThisYear.push(filteredData[k]);
-	        		}
-	        	}
-    			theYears[counter] = {"year": i, "data":dataForThisYear};
-    			counter++;
-    		}
-
-    		return theYears;
-    	};
-
     	var countryCodes = {"AF":"AFG","AX":"ALA","AL":"ALB","DZ":"DZA","AS":"ASM","AD":"AND",
 		"AO":"AGO","AI":"AIA","AQ":"ATA","AG":"ATG","AR":"ARG","AM":"ARM","AW":"ABW","AU":"AUS",
 		"AT":"AUT","AZ":"AZE","BS":"BHS","BH":"BHR","BD":"BGD","BB":"BRB","BY":"BLR","BE":"BEL",
@@ -110,8 +86,73 @@
 
     	};
 
-    	//GRID
-    	this.getDataForGrid = function(filteredData, dataUnit){
+    })
+
+	.service('MapUtilities',function(){
+
+		//for the map's legend domain find the min and max values of all years' data
+		this.calcLegendDomain = function(filteredData){
+
+			var i, len, elem, allValues = [], maxVal, minVal;
+
+			for (i = 0, len = filteredData.length; i < len; i++) {
+			    elem = filteredData[i];
+
+			    allValues.push(parseFloat(elem.figure));
+			}
+
+			maxVal = d3.max(allValues);
+			minVal = d3.min(allValues);
+
+			return [minVal, maxVal];
+		};
+
+		//pass in firstYear, endYear, loop through each year, find its data
+    	this.getEachYearsData = function(startYear, endYear, filteredData) {
+
+    		var starYearAsNum = parseInt(startYear);
+    		var endYearAsNum = parseInt(endYear);
+    		var theYears = [];
+    		var counter = 0;
+
+    	    for (var i = starYearAsNum; i < (endYearAsNum+1); i++) {
+    			var dataForThisYear = [];
+    			var currYear = i;
+	        	for (var k = 0; k < filteredData.length; k++) {
+	        		if(filteredData[k].year == currYear){
+	        			dataForThisYear.push(filteredData[k]);
+	        		}
+	        	}
+    			theYears[counter] = {"year": i, "data":dataForThisYear};
+    			counter++;
+    		}
+
+    		return theYears;
+    	};
+
+	})
+
+	.service('GridUtilities',function(){
+
+		//get the columns that will show in the grid (one col for each year)
+    	this.upDateGridData = function(startYear, endYear){
+
+		     	//reset the collumn defs
+		     	var colDefs = [
+	            	{field: 'cname', headerName: 'Country'},
+	            	{field: 'ccode', headerName: 'ISO3'}
+        		];
+		     	//depending on the start and end year:
+		     	//add all of the years to the grid's collum defs 
+	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
+	        		var theYear = i.toString();
+		        	colDefs.push({field: theYear, headerName: theYear});
+		        }
+		        
+				return colDefs;
+		};
+
+		this.getDataForGrid = function(filteredData, dataUnit){
 
     		var i, len, res = [], obj = {}, obj1 = {}, elem;
 
@@ -131,44 +172,6 @@
 
     	};
 
-    	//GRID
-    	//get the columns that will show in the grid (one col for each year)
-    	this.upDateGridData = function(startYear, endYear){
-
-		     	//reset the collumn defs
-		     	var colDefs = [
-	            	{field: 'cname', headerName: 'Country'},
-	            	{field: 'ccode', headerName: 'ISO3'}
-        		];
-		     	//depending on the start and end year:
-		     	//add all of the years to the grid's collum defs 
-	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
-	        		var theYear = i.toString();
-		        	colDefs.push({field: theYear, headerName: theYear});
-		        }
-		        
-				return colDefs;
-		};
-
-		//MAP
-		//for the map's legend domain find the min and max values of all years' data
-		this.calcLegendDomain = function(filteredData){
-
-			var i, len, elem, allValues = [], maxVal, minVal;
-
-			for (i = 0, len = filteredData.length; i < len; i++) {
-			    elem = filteredData[i];
-
-			    allValues.push(parseFloat(elem.figure));
-			}
-
-			maxVal = d3.max(allValues);
-			minVal = d3.min(allValues);
-
-			return [minVal, maxVal];
-		};
-
-
-    });
+	});
 
 })();

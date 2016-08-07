@@ -15,18 +15,18 @@
 	    	<div class="col-md-12">
 	    		<div class="page-header">
 	    			<h1>Explore the World Development Indicators database</h1>
-	    			<p>World Development Indicators (WDI) is the primary World Bank collection of development indicators, compiled from officially recognized international sources. It presents the most current and accurate global development data available, and includes national, regional and global estimates.</p>
+	    			<p>World Development Indicators (WDI) is the primary World Bank collection of development indicators, compiled from officially recognized international sources. It presents the most current and accurate global development data available.</p>
 	    		</div>
 	    	</div>
 	    </div>
 	    <div class="well">
-	    	<h4>Select the data set and time frame:</h4>
+	    	<h4>Select the data set and time frame from the WDI database:</h4>
 		    <p>Choose a data set:</p>
 		    <div class="btn-group btn-group-sm" ng-repeat="data in ctrl.dataSets">
 			  <button class='btn btn-default' index="{{$index}}" ng-class="{'btn-info': $index === ctrl.currentDataIndex}" ng-click="ctrl.updateData($index)">{{data.dataLabelShort}}</button>
 			</div>
 			<div class="clearfix"></div>
-			<p>Choose the time frame (anywhere from 1962 - 2015) for {{ctrl.dataSelected.dataLabelShort}}:</p>
+			<p>Choose the time frame (anywhere from 1962 - 2015):</p>
 		    <div class = "input-group">
 		    	<span class = "input-group-addon">Show data from:</span>
          		<input type = "text" class = "form-control" ng-model="ctrl.startYear" ng-change="ctrl.updateYearRange(ctrl.startYear, ctrl.endYear)">
@@ -40,6 +40,7 @@
 		   	</div>
 		    <div class="clearfix"></div>
 		</div>
+		<!-- where the map or grid will go: -->
 		<div ui-view></div>
 	</section>
 </div>

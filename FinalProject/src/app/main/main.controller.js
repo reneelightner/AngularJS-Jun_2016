@@ -3,36 +3,32 @@
 
   angular
     .module('MyApp.Main')
-    .controller('MainController', function(UI_STATES, MainControllerDataService, Utilities) {
+    .controller('MainController', function(UI_STATES, MainControllerDataService, Utilities, MapUtilities, GridUtilities) {
 
 	    var self = this;
 
-        //GRID's filter
-        self.onFilterChanged = function (value) {
-		    self.gridOptions.api.setQuickFilter(value);
-		};
-
+		//for the "choose a data set" buttons
 	    self.dataSets =[
-	    	{"dataLabelShort": "GDP Growth", "dataLabelLong": "Gross domestic product, change from a year ago", "dataID": "NY.GDP.MKTP.KD.ZG", "dataLabelUnit":"%"},
-			/*{"dataLabelShort": "GDP", "dataLabelLong": "Gross domestic product, current $", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "GDP per capita", "dataLabelLong": "Gross domestic product per capita, current $", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Exports per of GDP", "dataLabelLong": "Exports of goods and services as a percent of GDP", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Foreign direct investment, net inflows (BoP, current US$)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "GINI index", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	{"dataLabelShort": "Population", "dataLabelLong": "Population, total", "dataID": "SP.POP.TOTL", "dataLabelUnit": " people"},
-	    	{"dataLabelShort": "Life Expectancy", "dataLabelLong": "Life expectancy at birth, total years", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" yrs"},
-	    	{"dataLabelShort": "Internet Users", "dataLabelLong": "Internet users per 100 people", "dataID": "IT.NET.USER.P2", "dataLabelUnit": " people"},
-	    	/*{"dataLabelShort": "Imports of goods and services (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	{"dataLabelShort": "Unemployment Rate", "dataLabelLong": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS", "dataLabelUnit": "%"}
-	    	/*{"dataLabelShort": "Agriculture, value added (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "CO2 emissions (metric tons per capita)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Literacy rate, adult total (% of people ages 15 and above)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Central government debt, total (% of GDP)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Inflation, GDP deflator (annual %)", "dataLabelLong": "xx", "dataID": "xx"}*/
-	    	/*{"dataLabelShort": "Poverty headcount ratio at national poverty line (% of population)", "dataLabelLong": "xx", "dataID": "xx"}*/
+	    	{"dataLabelShort": "GDP growth (annual %)", "dataID": "NY.GDP.MKTP.KD.ZG", "dataLabelUnit":"%"},
+			{"dataLabelShort": "GDP (current US$)", "dataID": "NY.GDP.MKTP.CD", "dataLabelUnit":"$"},
+	    	{"dataLabelShort": "GDP per capita (current US$)", "dataID": "NY.GDP.PCAP.CD", "dataLabelUnit":"$"},
+	    	{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataID": "NY.GNP.PCAP.CD", "dataLabelUnit":"$"},
+	    	/*{"dataLabelShort": "Exports per of GDP", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "Foreign direct investment, net inflows (BoP, current US$)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "GINI index", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	{"dataLabelShort": "Population, total", "dataID": "SP.POP.TOTL", "dataLabelUnit": " people"},
+	    	{"dataLabelShort": "Life expectancy at birth, total (years)", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" yrs"},
+	    	{"dataLabelShort": "Internet users (per 100 people)", "dataID": "IT.NET.USER.P2", "dataLabelUnit": ""},
+	    	{"dataLabelShort": "Imports of goods and services (% of GDP)", "dataID": "NE.IMP.GNFS.ZS", "dataLabelUnit": "%"},
+	    	{"dataLabelShort": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS", "dataLabelUnit": "%"}
+	    	/*{"dataLabelShort": "Agriculture, value added (% of GDP)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "CO2 emissions (metric tons per capita)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "Literacy rate, adult total (% of people ages 15 and above)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "Central government debt, total (% of GDP)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "Inflation, GDP deflator (annual %)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	/*{"dataLabelShort": "Poverty headcount ratio at national poverty line (% of population)", "dataID": "xx", "dataLabelUnit":""}*/
 	    ];
 
 	    //called when click on a data set button
@@ -56,6 +52,11 @@
 	    	self.currentYearIndex = indexSelected;
 	    	self.currentYear = self.years[indexSelected].year;
 			self.dataToShowOnMap = self.years[indexSelected].data;
+		};
+
+		//GRID's filter
+        self.onFilterChanged = function (value) {
+		    self.gridOptions.api.setQuickFilter(value);
 		};
 
 		self.gridOptions = {
@@ -92,14 +93,11 @@
 		     	var filteredData = Utilities.getCountriesData(promiseData);
 		     	self.unit = self.dataSelected.dataLabelUnit;//unit for map and grid
 		     	//FOR THE GRID
-		     	var rowData = Utilities.getDataForGrid(filteredData, self.unit);
-		     	var colDefs = Utilities.upDateGridData(startYear, endYear);
-		     	//add the collumn defs to the grid options
-		        self.gridOptions.columnDefs = colDefs;
-		        //add the grid data to the grid options
-		     	self.gridOptions.rowData = rowData;
-		     	//if the grid is already drawn from before then refresh it with the:
-		        //new column defs, new data
+		     	var rowData = GridUtilities.getDataForGrid(filteredData, self.unit);
+		     	var colDefs = GridUtilities.upDateGridData(startYear, endYear);
+		        self.gridOptions.columnDefs = colDefs;//add the collumn defs to the grid options
+		     	self.gridOptions.rowData = rowData; //add the grid data to the grid options
+		     	//if the grid is already drawn from before then refresh it with the: new column defs, new data
 		        if(self.gridOptions.api){
 		        	self.gridOptions.api.setColumnDefs(colDefs);
 					self.gridOptions.api.setRowData(rowData);
@@ -110,12 +108,12 @@
 				}
 				//FOR THE MAP
 		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"
-		        self.years = Utilities.getEachYearsData(startYear, endYear, filteredData);
+		        self.years = MapUtilities.getEachYearsData(startYear, endYear, filteredData);
 		        self.updateYear(0);//selects the year and its data to show on map, always select the first yea when the update button is clicked
-		        self.domainForLengend = Utilities.calcLegendDomain(filteredData);
+		        self.domainForLengend = MapUtilities.calcLegendDomain(filteredData);
 		        //FOR THE MAP AND GRID
 		        //set the text labels for the map and grid
-		        self.dataLabelLongMAPGRID = self.dataSelected.dataLabelLong;	  
+		        self.dataLabelLongMAPGRID = self.dataSelected.dataLabelShort;	  
 		        self.startYearMAPGRID = self.startYear;  
 		        self.endYearMAPGRID = self.endYear;  		
 		    }, function (error) {//error callback
@@ -129,55 +127,7 @@
 		self.updateGridMap(self.yearRange, self.startYear, self.endYear);
 
 	    
-	}).directive('myGrid', function () {
-
-	    return {
-	        restrict: 'E',
-	        templateUrl: 'app/main/gridtemp.html', //path from index.html
-	        scope: {// attributes bound to the scope of the directive
-	          gridOptions : '='
-	        }
-	    };
-
- 	}).directive('myMap', function () {
- 		
- 		var map = d3.geomap.choropleth()
-            .geofile('assets/countries.json')//the topojson file loaded to draw the map countires
-            .colors(colorbrewer.YlGnBu[9]) //d3.geomap comes with support for color schemes from the ColorBrewer project.
-            .column('figure') //data used to color the map and legend 
-            .legend(true) //if you don't want to display a legend or make your own set it to false
-            .unitId('ccode')//which in the data contains the ID values of the geographic units displayed on the map (in this case iso3)
-            .zoomFactor(5); //zoom factor to use when a map unit is clicked
-
-	    return {
-	        restrict: 'E',
-	        template:"<div id='map'></div>",
-	        scope: { // attributes bound to the scope of the directive
-		      val: '=',
-		      unit: '=',
-		      legenddomain: "="
-		    },
-		    link: function (scope, element, attrs) {
-		    	scope.$watch('legenddomain', function (newVal, oldVal) {
-		    		map.domain(newVal);
-		    	});
-		    	scope.$watch('unit', function (newVal, oldVal) {// whenever the bound 'unit' expression changes, execute this 
-		    		map.format(function(d) {return (Math.round(d * 10) / 10).toFixed(2)+newVal;});//add the format for the map legend that includes the unit 
-		    	});
-		    	scope.$watch('val', function (newVal, oldVal) {// whenever the bound 'val' expression changes, execute this 			        
-			        // clear the elements inside of the directive
-			        if(oldVal != newVal){
-			        	d3.select('#map svg').remove();
-			        }
-        			//draw the map
-        			d3.select('#map')
-                		.datum(newVal)
-                		.call(map.draw, map);
-			    });
-		    }
-	    };
-
- 	});
+	});
 
   /** @ngInject */
 
