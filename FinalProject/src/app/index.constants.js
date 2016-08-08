@@ -32,7 +32,7 @@
 
     })
 
-    .service('Utilities',function(){
+    .service('Utilities',function($q){
 
     	var self = this;
 
@@ -88,11 +88,19 @@
 
     	};
 
-    	//self.filteredDataGlobal = "this works here";
+    	// creates an object that allows you to defer (or delay) a result until a later time
+    	var deferred = $q.defer();
 
     	self.getFilteredData = function(){
 
-			return self.filteredDataGlobal;
+	    	if(self.filteredDataGlobal == set){
+	    		deferred.resolve();
+	    	}else{
+	    		deferred.reject();
+	    	}
+	        
+	    	return deferred.promise;
+
 		};
 
     })
