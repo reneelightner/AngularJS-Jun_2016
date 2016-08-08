@@ -9,26 +9,23 @@
 
 		//for the "choose a data set" buttons
 	    self.dataSets =[
-	    	{"dataLabelShort": "GDP growth (annual %)", "dataID": "NY.GDP.MKTP.KD.ZG", "dataLabelUnit":"%"},
-			{"dataLabelShort": "GDP (current US$)", "dataID": "NY.GDP.MKTP.CD", "dataLabelUnit":"$"},
-	    	{"dataLabelShort": "GDP per capita (current US$)", "dataID": "NY.GDP.PCAP.CD", "dataLabelUnit":"$"},
-	    	{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataID": "NY.GNP.PCAP.CD", "dataLabelUnit":"$"},
-	    	/*{"dataLabelShort": "Exports per of GDP", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "Foreign direct investment, net inflows (BoP, current US$)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "GINI index", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataID": "xx", "dataLabelUnit":""}*/
 	    	{"dataLabelShort": "Population, total", "dataID": "SP.POP.TOTL", "dataLabelUnit": " people"},
-	    	{"dataLabelShort": "Life expectancy at birth, total (years)", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" yrs"},
+	    	{"dataLabelShort": "GDP growth (annual %)", "dataID": "NY.GDP.MKTP.KD.ZG", "dataLabelUnit":"%"},
+			{"dataLabelShort": "GDP (current US$)", "dataID": "NY.GDP.MKTP.CD", "dataLabelUnit":" (US$)"},
+	    	{"dataLabelShort": "GDP per capita (current US$)", "dataID": "NY.GDP.PCAP.CD", "dataLabelUnit":" (US$)"},
+	    	{"dataLabelShort": "GNI per capita, Atlas method (current US$)", "dataID": "NY.GNP.PCAP.CD", "dataLabelUnit":" (US$)"},
+	    	{"dataLabelShort": "Exports of goods and services (% of GDP)", "dataID": "NE.EXP.GNFS.ZS", "dataLabelUnit":"%"},
+	    	{"dataLabelShort": "Foreign direct investment, net (BoP, current US$)", "dataID": "BN.KLT.DINV.CD", "dataLabelUnit":" (US$)"},
+	    	{"dataLabelShort": "GNI per capita, PPP (current international $)", "dataID": "NY.GNP.PCAP.PP.CD", "dataLabelUnit":" (Int. $)"},
+	    	{"dataLabelShort": "Inflation, consumer prices (annual %)", "dataID": "FP.CPI.TOTL.ZG", "dataLabelUnit":"%"},
+	    	{"dataLabelShort": "Life expectancy at birth, total (years)", "dataID": "SP.DYN.LE00.IN", "dataLabelUnit":" years"},
 	    	{"dataLabelShort": "Internet users (per 100 people)", "dataID": "IT.NET.USER.P2", "dataLabelUnit": ""},
 	    	{"dataLabelShort": "Imports of goods and services (% of GDP)", "dataID": "NE.IMP.GNFS.ZS", "dataLabelUnit": "%"},
-	    	{"dataLabelShort": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS", "dataLabelUnit": "%"}
-	    	/*{"dataLabelShort": "Agriculture, value added (% of GDP)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "CO2 emissions (metric tons per capita)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "Literacy rate, adult total (% of people ages 15 and above)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "Central government debt, total (% of GDP)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "Inflation, GDP deflator (annual %)", "dataID": "xx", "dataLabelUnit":""}*/
-	    	/*{"dataLabelShort": "Poverty headcount ratio at national poverty line (% of population)", "dataID": "xx", "dataLabelUnit":""}*/
+	    	{"dataLabelShort": "Unemployment rate of the total labor force (modeled ILO estimate)", "dataID": "SL.UEM.TOTL.ZS", "dataLabelUnit": "%"},
+	    	{"dataLabelShort": "Agriculture, value added (% of GDP)", "dataID": "NV.AGR.TOTL.ZS", "dataLabelUnit":"%"},
+	    	{"dataLabelShort": "CO2 emissions (metric tons per capita)", "dataID": "EN.ATM.CO2E.PC", "dataLabelUnit":" tons"},
+	    	{"dataLabelShort": "Central government debt, total (% of GDP)", "dataID": "GC.DOD.TOTL.GD.ZS", "dataLabelUnit":"%"},
+	    	{"dataLabelShort": "Poverty headcount ratio at national poverty line (% of population)", "dataID": "SI.POV.NAHC", "dataLabelUnit":"%"}
 	    ];
 
 	    //called when click on a data set button
@@ -110,8 +107,8 @@
 				//FOR THE MAP
 		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"
 		        self.years = MapUtilities.getEachYearsData(startYear, endYear, filteredData);
-		        self.updateYear(0);//selects the year and its data to show on map, always select the first yea when the update button is clicked
 		        self.domainForLengend = MapUtilities.calcLegendDomain(filteredData);
+		        self.updateYear(0);//selects the year and its data to show on map, always select the first yea when the update button is clicked		        
 		        //FOR THE MAP AND GRID
 		        //set the text labels for the map and grid
 		        self.dataLabelLongMAPGRID = self.dataSelected.dataLabelShort;	  

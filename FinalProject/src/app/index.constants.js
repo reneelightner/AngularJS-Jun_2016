@@ -88,7 +88,10 @@
 
     	};
 
+    	//self.filteredDataGlobal = "this works here";
+
     	self.getFilteredData = function(){
+
 			return self.filteredDataGlobal;
 		};
 

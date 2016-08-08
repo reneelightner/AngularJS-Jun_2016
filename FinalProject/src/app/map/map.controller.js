@@ -4,7 +4,6 @@ angular.module('MyApp.Map')
 .controller('MapController', function(Utilities, SetGlobals, MapUtilities) {
 
 	var self = this;
-	
 	//trying to get the filteredData from the Utilities service but its not ready
 	//self.filteredData = Utilities.getFilteredData();
 
@@ -26,10 +25,10 @@ angular.module('MyApp.Map')
 	        scope: { // attributes bound to the scope of the directive
 		      val: '=',
 		      unit: '=',
-		      legenddomain: "="
+		      domain: "="
 		    },
 		    link: function (scope, element, attrs) {
-		    	scope.$watch('legenddomain', function (newVal, oldVal) {
+		    	scope.$watch('domain', function (newVal, oldVal) {
 		    		map.domain(newVal);
 		    	});
 		    	scope.$watch('unit', function (newVal, oldVal) {// whenever the bound 'unit' expression changes, execute this 
