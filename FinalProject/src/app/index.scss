@@ -37,6 +37,26 @@ $icon-font-path: "../../bootstrap-sass/assets/fonts/bootstrap/";
   margin-bottom: 50px;
   .update-btn-group{
     margin-top: 15px;
+    .btn-default{
+      background-color: #999;
+      li{
+        color: #999;
+        a{
+          color: #fff;
+          background-color: #999;
+          text-decoration: none;
+          &:hover{
+            text-decoration: none;
+          }
+        }
+        &.active{
+          a{
+            color: #ccc;
+          }
+        }
+      }
+
+    }
   }
   p{
     margin-top: 15px;

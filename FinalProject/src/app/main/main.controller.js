@@ -51,21 +51,22 @@
 			self.dataToShowOnMap = self.years[indexSelected].data;
 		};
 
-		//GRID's filter
-        self.onFilterChanged = function (value) {
-		    self.gridOptions.api.setQuickFilter(value);
+		//FOR GRID
+		self.gridOptions = {
+			enableSorting: true,
+			enableFilter: true,
+			sizeColumnsToFit: true,
+			onGridReady: function(params){
+			    if(self.endYear - self.startYear < 13){
+			        params.api.sizeColumnsToFit(); 
+			    }
+			}
 		};
 
-		self.gridOptions = {
-		    enableSorting: true,
-		    enableFilter: true,
-		    sizeColumnsToFit: true,
-		    onGridReady: function(params){
-		        if(self.endYear - self.startYear < 13){
-		          	params.api.sizeColumnsToFit(); 
-		        }
-		    }
-		 };
+		//GRID's filter
+	    self.onFilterChanged = function (value) {
+			self.gridOptions.api.setQuickFilter(value);
+		};
 
 		//called when update button is clicked
 		self.updateGridMap = function(theYearRange, startYear, endYear) {
@@ -89,20 +90,21 @@
 		     	//filteredData -- array of objs, one obj for each country's year USED FOR MAP AND GRID
 		     	var filteredData = Utilities.getCountriesData(promiseData);
 		     	self.unit = self.dataSelected.dataLabelUnit;//unit for map and grid
-		     	SetGlobals.returnGlobals(startYear, endYear);
-		     	//FOR THE GRID
-		     	var rowData = GridUtilities.getDataForGrid(filteredData, self.unit);
-		     	var colDefs = GridUtilities.upDateGridData(startYear, endYear);
-		        self.gridOptions.columnDefs = colDefs;//add the collumn defs to the grid options
-		     	self.gridOptions.rowData = rowData; //add the grid data to the grid options
-		     	//if the grid is already drawn from before then refresh it with the: new column defs, new data
-		        if(self.gridOptions.api){
-		        	self.gridOptions.api.setColumnDefs(colDefs);
+		     	SetGlobals.returnGlobals(startYear, endYear, self.unit);//make these "global" (aka: in a utility) so they can be accessed in other controller
+				//GRID
+				var rowData = GridUtilities.getDataForGrid(filteredData);
+				var colDefs = GridUtilities.upDateGridData(startYear, endYear);
+				//add the data and the colDefs to self.gridOptions
+				self.gridOptions.columnDefs = colDefs;//add the collumn defs to the grid options
+				self.gridOptions.rowData = rowData; //add the grid data to the grid options
+				//if the grid is already drawn from before then refresh it with the: new column defs, new data
+				if(self.gridOptions.api){
+				    self.gridOptions.api.setColumnDefs(colDefs);
 					self.gridOptions.api.setRowData(rowData);
 					self.gridOptions.api.refreshView();	
 					if(endYear - startYear < 13){
-          				self.gridOptions.api.sizeColumnsToFit();
-          			}
+		          		self.gridOptions.api.sizeColumnsToFit();
+		          	}
 				}
 				//FOR THE MAP
 		        //self.years is for the map, array of objs each obj has key as "year" and key as "data"

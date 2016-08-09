@@ -4,10 +4,23 @@ angular.module('MyApp.Map')
 .controller('MapController', function(Utilities, SetGlobals, MapUtilities) {
 
 	var self = this;
-	//trying to get the filteredData from the Utilities service but its not ready
-	//self.filteredData = Utilities.getFilteredData();
 
-	//console.log(self.filteredData);
+	Utilities.getFilteredData().then(function(filteredData){
+		self.filteredData = filteredData;
+	});
+
+	SetGlobals.getStartYear().then(function(data){
+		self.startYear = data;
+	});
+
+	SetGlobals.getEndYear().then(function(data){
+		self.endYear = data;
+	});
+
+	SetGlobals.getUnit().then(function(data){
+		self.unit = data;
+	});
+
 
 }).directive('myMap', function () {
  		

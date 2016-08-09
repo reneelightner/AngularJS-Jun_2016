@@ -35,7 +35,7 @@
     .service('Utilities',function($q){
 
     	var self = this;
-
+		var deferred = $q.defer();
     	var countryCodes = {"AF":"AFG","AX":"ALA","AL":"ALB","DZ":"DZA","AS":"ASM","AD":"AND",
 		"AO":"AGO","AI":"AIA","AQ":"ATA","AG":"ATG","AR":"ARG","AM":"ARM","AW":"ABW","AU":"AUS",
 		"AT":"AUT","AZ":"AZE","BS":"BHS","BH":"BHR","BD":"BGD","BB":"BRB","BY":"BLR","BE":"BEL",
@@ -83,47 +83,64 @@
 	     	});
 
 	     	self.filteredDataGlobal = filteredData;
+	     	deferred.resolve(self.filteredDataGlobal);
 
 	     	return filteredData;
 
     	};
 
-    	// creates an object that allows you to defer (or delay) a result until a later time
-    	var deferred = $q.defer();
 
     	self.getFilteredData = function(){
 
-	    	if(self.filteredDataGlobal == set){
-	    		deferred.resolve();
-	    	}else{
-	    		deferred.reject();
+	    	if(self.filteredDataGlobal){
+	    		deferred.resolve(self.filteredDataGlobal);
 	    	}
-	        
 	    	return deferred.promise;
 
 		};
 
     })
 
-	.service('SetGlobals',function(){
+	.service('SetGlobals',function($q){
 
 		var self = this;
 
-		self.returnGlobals = function(startYear, endYear){
+		var deferredStartYear = $q.defer();
+		var deferredEndYear = $q.defer();
+		var deferredUnit = $q.defer();
+
+		self.returnGlobals = function(startYear, endYear, unit){
 
 			self.startYearGlobal = startYear;
 			self.endYearGlobal = endYear;
+			self.unitGlobal = unit;
+
+			deferredStartYear.resolve(self.startYearGlobal);
+			deferredEndYear.resolve(self.endYearGlobal);
+			deferredUnit.resolve(self.unitGlobal);
 
 		};
 
 		self.getStartYear = function(){
-			return self.startYearGlobal;
+			if(self.startYearGlobal){
+	    		deferredStartYear.resolve(self.startYearGlobal);
+	    	}
+			return deferredStartYear.promise;
 		};
 
 		self.getEndYear = function(){
-			return self.endYearGlobal;
+			if(self.endYearGlobal){
+	    		deferredEndYear.resolve(self.endYearGlobal);
+	    	}
+			return deferredEndYear.promise;
 		};
 
+		self.getUnit = function(){
+			if(self.unitGlobal){
+	    		deferredUnit.resolve(self.unitGlobal);
+	    	}
+			return deferredUnit.promise;
+		};
 
 	})
 
@@ -189,13 +206,13 @@
 		     	//add all of the years to the grid's collum defs 
 	        	for (var i = parseInt(startYear); i < parseInt(endYear); i++) {
 	        		var theYear = i.toString();
-		        	colDefs.push({field: theYear, headerName: theYear});
+		        	colDefs.push({field: theYear, headerName: theYear, filter: 'number'});
 		        }
 		        
 				return colDefs;
 		};
 
-		self.getDataForGrid = function(filteredData, dataUnit){
+		self.getDataForGrid = function(filteredData){
 
     		var i, len, res = [], obj = {}, obj1 = {}, elem;
 
@@ -208,7 +225,7 @@
 			        };
 			        res.push(obj1);
 			    }
-			    obj1[filteredData[i].year] = (Math.round(elem.figure * 10) / 10).toFixed(2)+dataUnit;//Round the figure to tenths pace
+			    obj1[filteredData[i].year] = parseFloat((Math.round(elem.figure * 10) / 10).toFixed(2));//Round the figure to tenths pace
 			}
 
 			return res;
