@@ -75,12 +75,8 @@
 				alert("Start year "+startYear+" is larger than end year "+endYear);
 				return;
 			}
-			if(parseInt(startYear)>2015){
-				alert("You must choose a time frame ending in 2015 at the latest.");
-				return;
-			}
-			if(parseInt(endYear)<1962){
-				alert("You must choose a time frame beginning in 1962 at the earliest.");
+			if(parseInt(startYear)>2015 || parseInt(startYear)<1962 || parseInt(endYear)<1962 || parseInt(endYear)>2015){
+				alert("You must choose a time frame ending in 2015 at the latest and beginning in 1962 at the earliest.");
 				return;
 			}
 
